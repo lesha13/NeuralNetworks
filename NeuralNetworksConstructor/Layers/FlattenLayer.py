@@ -5,13 +5,12 @@ from Layers import Layer
 
 class FlattenLayer(Layer):
     def __init__(self):
-        self.output = None
-
         super(FlattenLayer, self).__init__()
+        self.output = None
 
     def forward(self, x: np.ndarray) -> np.ndarray:
         result = x.flatten()
-        if not self.save_memory:
+        if not self._save_memory:
             self.output = result
         return result
 

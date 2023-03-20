@@ -7,13 +7,13 @@ class Layer(object):
     Has methods for forward propagation, computing local gradient and releasing memory.
     -----
     Attributes
-        :save_memory: bool
-            if save_memory = False then layer does store the data needed for backpropagation
+        :_save_memory: bool
+            if _save_memory = False then layer does store the data needed for backpropagation
             else doesn't store the data needed for backpropagation
         :_info: str
             string used in __str__ and __repr__ to show the info about layer
     """
-    save_memory = False
+    _save_memory = False
 
     def __init__(self, *args, **kwargs):
         self._info = ""
@@ -51,7 +51,7 @@ class Layer(object):
 
     def __call__(self, x: np.ndarray) -> np.ndarray:
         """
-        Calls forward(self, x: np.ndarray) method.
+        Calls forward() method.
         -----
         :param x: np.ndarray
         -----

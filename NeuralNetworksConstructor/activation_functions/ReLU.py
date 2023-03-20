@@ -7,7 +7,7 @@ def ReLU(data: np.ndarray | None, derivative: bool = False) -> np.ndarray | None
     -----
     :param data: np.ndarray | None
         some input numpy array or None
-    :param derivative: bool
+    :param derivative: bool, optional
         default: False
         if derivative = True computes derivative of ReLU on this data
     -----
@@ -16,9 +16,8 @@ def ReLU(data: np.ndarray | None, derivative: bool = False) -> np.ndarray | None
     """
     if data is None:
         return None
+
     if not derivative:
-        data[data < 0] = 0
+        return np.where(data <= 0, 0, data)
     else:
-        data[data < 0] = 0
-        data[data > 0] = 1
-    return data
+        return np.where(data <= 0, 0, 1)

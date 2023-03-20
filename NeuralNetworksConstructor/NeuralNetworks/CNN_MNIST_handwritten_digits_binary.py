@@ -8,7 +8,7 @@ from loss_functions import CrossEntropyLoss
 
 class CNNb(NeuralNetwork):
     def __init__(self):
-        super(CNNb, self).__init__()
+        # super(CNNb, self).__init__()
         self.conv_layer1 = ConvolutionLayer2d(1, 5, 28, 28)  # 1*28*28 -> 5*26*26
         self.max_pool_layer1 = MaxPoolLayer2d()  # 5*26*26 -> 5*13*13
 
@@ -19,20 +19,6 @@ class CNNb(NeuralNetwork):
 
         self.linear_layer1 = LinearLayer(500, 250)  # 500 -> 250
         self.linear_layer2 = LinearLayer(250, 1)  # 250 -> 1
-
-    def forward(self, x: np.ndarray) -> np.ndarray:
-        x = self.conv_layer1(x)
-        x = self.max_pool_layer1(x)
-
-        x = self.conv_layer2(x)
-        x = self.max_pool_layer2(x)
-
-        x = self.flatten_layer(x)
-
-        x = self.linear_layer1(x)
-        x = self.linear_layer2(x)
-
-        return x.squeeze()
 
     def backward(self, x: np.ndarray, y: np.ndarray, lr: float = 0.1):
         loss = CrossEntropyLoss(self(x), y)
@@ -45,7 +31,7 @@ class CNNb(NeuralNetwork):
 
         error = self.flatten_layer.gradient(error, self.linear_layer1)
 
-        error = self.max_pool_layer2.gradient(error)
+        error = self.max_pool_layer2.gradient(error, self.flatten_layer)
         error = self.conv_layer2.gradient(error)
         self.conv_layer2.backward(error, self.max_pool_layer1, lr)
 

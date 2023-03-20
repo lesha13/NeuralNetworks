@@ -1,10 +1,9 @@
 import numpy as np
 from numpy.random import normal
 
-from Layers import Layer
-from Layers import TrainableLayer
+from Layers import Layer, TrainableLayer
 from activation_functions import sigmoid
-from loss_functions import CrossEntropyLoss
+from loss_functions import Loss
 
 
 class LinearLayer(TrainableLayer):
@@ -41,13 +40,13 @@ class LinearLayer(TrainableLayer):
             resulting numpy array of transformed data
         """
         result = data @ self._weights.T + self._bias.T
-        if not self.save_memory:
+        if not self._save_memory:
             self.weighted_sum = result
             return self.output
         else:
             return self.activation(result)
 
-    def gradient(self, error: np.ndarray | CrossEntropyLoss, next_layer: Layer | None = None) -> np.ndarray:
+    def gradient(self, error: np.ndarray | Loss, next_layer: Layer | None = None) -> np.ndarray:
         """
         Computes the local gradient needed for backpropagation.
         -----
@@ -55,7 +54,7 @@ class LinearLayer(TrainableLayer):
             loss or local gradients that needs to be propagated
         :param next_layer: next_layer: Layer | None
         """
-        if isinstance(error, CrossEntropyLoss):
+        if isinstance(error, Loss):
             return error.loss
 
         if isinstance(next_layer, Layer):
@@ -72,8 +71,6 @@ class LinearLayer(TrainableLayer):
             numpy array of calculated local gradients
             if this is the last layer, there are no next_layer so pass None
             else pass next layer object
-        -----
-        :return: np.ndarray
         :param prev_layer: Layer | np.ndarray
             if this is the first layer, there is no prev_layer so pass input data
             else pass previous layer object
@@ -81,13 +78,18 @@ class LinearLayer(TrainableLayer):
             value usually between 0.1 and 10**-6.
             Makes the changes to weights and bias smaller, so the training becomes smoother.
         -----
-        :return:None
+        :return: None
         """
         error = lr * error.T
+        # if isinstance(prev_layer, Layer):
+        #     self._weights -= error * prev_layer.output
+        # else:
+        #     self._weights -= error * prev_layer
+
         if isinstance(prev_layer, Layer):
-            self._weights -= error * prev_layer.output
-        else:
-            self._weights -= error * prev_layer
+            prev_layer = prev_layer.output
+
+        self._weights -= error * prev_layer
         self._bias -= error
 
     def release_memory(self) -> None:

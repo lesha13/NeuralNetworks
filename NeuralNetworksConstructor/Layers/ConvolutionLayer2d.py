@@ -1,8 +1,7 @@
 import numpy as np
 from numpy.random import normal
 
-from Layers import Layer
-from Layers import TrainableLayer
+from Layers import Layer, TrainableLayer
 from activation_functions import ReLU
 
 
@@ -65,10 +64,10 @@ class ConvolutionLayer2d(TrainableLayer):
         -----
         :return: np.ndarray
         """
-        x = x[np.newaxis, ...] if x.ndim == 2 else x
+        # x = x[np.newaxis, ...] if x.ndim == 2 else x
         result = self.convolve(x, self._weights) + self._bias
 
-        if not self.save_memory:
+        if not self._save_memory:
             self.weighted_sum = result
             return self.output
         else:
@@ -82,7 +81,7 @@ class ConvolutionLayer2d(TrainableLayer):
         -----
         :return: np.ndarray
         """
-        return error @ self.output
+        return error @ self.derivative_weighted_sum
 
     def backward(self, error: np.ndarray, prev_layer: Layer | np.ndarray, lr: float = 0.1) -> None:
         """
@@ -94,19 +93,27 @@ class ConvolutionLayer2d(TrainableLayer):
         -----
         :return: None
         """
+        # if isinstance(prev_layer, Layer):
+        #     weights_update = np.array([
+        #         [
+        #             self.convolution_2d_1ch(output, e) for output in prev_layer.output
+        #         ] for e in error
+        #     ])
+        # else:
+        #     weights_update = np.array([
+        #         [
+        #             self.convolution_2d_1ch(output, e) for output in
+        #             (prev_layer[np.newaxis, ...] if prev_layer.ndim == 2 else prev_layer)
+        #         ] for e in error
+        #     ])
+
         if isinstance(prev_layer, Layer):
-            weights_update = np.array([
-                [self.convolution_2d(output, e) for output in prev_layer.output]
-                for e in error
-            ])
-        else:
-            weights_update = np.array([
-                [
-                    self.convolution_2d(output, e) for output in
-                    (prev_layer[np.newaxis, ...] if prev_layer.ndim == 2 else prev_layer)
-                ]
-                for e in error
-            ])
+            prev_layer = prev_layer.output
+
+        weights_update = np.array([
+            [self.convolution_2d_1ch(output, e) for output in prev_layer]
+            for e in error
+        ])
         self._weights -= lr * weights_update
         self._bias -= lr * error
 
@@ -119,7 +126,7 @@ class ConvolutionLayer2d(TrainableLayer):
         self.weighted_sum = None
 
     @staticmethod
-    def convolution_2d(data: np.ndarray, kernel: np.ndarray, padding: bool = False) -> np.ndarray:
+    def convolution_2d_1ch(data: np.ndarray, kernel: np.ndarray, padding: bool = False) -> np.ndarray:
         """
         Static method used for 2d convolution between one 2 dimensional numpy array and one 2 dimensional numpy array
         -----
@@ -156,6 +163,12 @@ class ConvolutionLayer2d(TrainableLayer):
         return result
 
     @staticmethod
+    def convolution_2d_mch(data: np.ndarray, kernel: np.ndarray, padding: bool = False) -> np.ndarray:
+        return np.array([
+            ConvolutionLayer2d.convolution_2d_1ch(x, k, padding) for x, k in zip(data, kernel)
+        ])
+
+    @staticmethod
     def convolve(data: np.ndarray, kernels: np.ndarray, padding: bool = False) -> np.ndarray:
         """
         Static method used for 2d convolution between many 2 dimensional numpy array and many 2 dimensional numpy array
@@ -172,7 +185,7 @@ class ConvolutionLayer2d(TrainableLayer):
             numpy array of convoluted 2 dimensional numpy array
         """
         result = np.array([
-            sum(ConvolutionLayer2d.convolution_2d(x, kernel, padding) for x, kernel in zip(data, kernel))
+            sum(ConvolutionLayer2d.convolution_2d_1ch(x, kernel, padding) for x, kernel in zip(data, kernel))
             for kernel in kernels
         ])
         return result

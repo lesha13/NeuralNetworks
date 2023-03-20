@@ -1,33 +1,34 @@
 import numpy as np
 
-from Layers import Layer
+from Layers import Layer, ConvolutionLayer2d
 
 
 class MaxPoolLayer2d(Layer):
     def __init__(self):
+        super(MaxPoolLayer2d, self).__init__()
         self.output = None
         self.indices = None
 
-        super(MaxPoolLayer2d, self).__init__()
-
     def forward(self, x: np.ndarray) -> np.ndarray:
-        output, indices = [], []
+        if not self._save_memory:
+            output = []
+            indices = []
 
-        for point in x:
-            o, i = self.max_pool_2d(point, True)
-            output.append(o)
-            indices.append(i)
+            for point in x:
+                o, i = self.max_pool_2d_1ch(point, True)
+                output.append(o)
+                indices.append(i)
 
-        pooled, indices = np.array(output), np.array(indices)
-
-        if not self.save_memory:
+            pooled, indices = np.array(output), np.array(indices)
             self.output, self.indices = pooled, indices
+        else:
+            pooled = np.array([self.max_pool_2d_1ch(point) for point in x])
 
         return pooled
 
-    def gradient(self, error: np.ndarray, next_layer: Layer | None = None) -> np.ndarray:
-        if isinstance(next_layer, Layer):
-            error = next_layer.convolve(
+    def gradient(self, error: np.ndarray, next_layer: Layer) -> np.ndarray:
+        if isinstance(next_layer, ConvolutionLayer2d):
+            error = ConvolutionLayer2d.convolve(
                 error,
                 np.swapaxes(next_layer.weights, 0, 1)[::, ::, ::-1, ::-1],
                 True,
@@ -40,7 +41,7 @@ class MaxPoolLayer2d(Layer):
         self.indices = None
 
     @staticmethod
-    def max_pool_2d(data: np.ndarray, return_indices: bool = False) -> np.ndarray | tuple[np.ndarray]:
+    def max_pool_2d_1ch(data: np.ndarray, return_indices: bool = False) -> np.ndarray | tuple[np.ndarray, np.ndarray]:
         # 2*2 max pool with a stride of 2
         ds0, ds1 = data.shape
         result = np.zeros([ds0 // 2, ds1 // 2])
@@ -58,3 +59,9 @@ class MaxPoolLayer2d(Layer):
             return result, indices
         else:
             return result
+
+    @staticmethod
+    def max_pool_2d_mch(data: np.ndarray, return_indices: bool = False) -> np.ndarray | tuple[np.ndarray]:
+        return np.array([
+            MaxPoolLayer2d.max_pool_2d_1ch(x, return_indices) for x in data
+        ])

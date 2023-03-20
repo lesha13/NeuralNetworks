@@ -7,7 +7,7 @@ def hyperbolic_tangent(data: np.ndarray | None, derivative: bool = False) -> np.
     -----
     :param data: np.ndarray | None
         some input numpy array or None
-    :param derivative: bool
+    :param derivative: bool, optional
         default: False
         if derivative = True computes derivative of hyperbolic tangent on this data
     -----
@@ -16,6 +16,7 @@ def hyperbolic_tangent(data: np.ndarray | None, derivative: bool = False) -> np.
     """
     if data is None:
         return None
+
     data = (np.exp(data) - np.exp(-data)) / (np.exp(data) + np.exp(-data))
     if not derivative:
         return data

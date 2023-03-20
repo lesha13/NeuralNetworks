@@ -8,7 +8,7 @@ from activation_functions import softmax
 
 class NNm(NeuralNetwork):
     def __init__(self):
-        super(NNm, self).__init__()
+        # super(NNm, self).__init__()
         self.linear_layer1 = LinearLayer(2, 10)
         self.linear_layer2 = LinearLayer(10, 5)
         self.linear_layer3 = LinearLayer(5, 4, softmax)

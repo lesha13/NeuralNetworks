@@ -3,13 +3,13 @@ from datetime import datetime
 
 def timer(func: callable) -> callable:
     """
-    Decorator used for time measuring.
+    Decorator used for printing time.
     -----
     :param func: callable
-        function, that need to be wrapped
+        function, that need to be wrapped.
     -----
     :return: callable
-        returns wrapper function which prints time used for executing func and returns some result
+        returns wrapper function which prints time used for executing function and returns some result.
     """
     def wrapper(*args: object, **kwargs: object) -> object:
         start = datetime.now()

@@ -7,7 +7,7 @@ def load_model(file: str) -> NeuralNetwork:
     """
     Function for loading saved model from .pickle file.
     -----
-    :param file: str
+    :key file: str
         path to file
     -----
     :return: NeuralNetwork

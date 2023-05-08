@@ -32,7 +32,7 @@ class DenseLayer(TrainableLayer):
         """
         Does the forward propagation of the data using liner transformations.
         -----
-        :param data: np.ndarray
+        :key data: np.ndarray
             numpy array of data that need to be transformed
         -----
         :return: np.ndarray
@@ -51,9 +51,9 @@ class DenseLayer(TrainableLayer):
         """
         Computes the local gradient needed for backpropagation.
         -----
-        :param error: np.ndarray
+        :key error: np.ndarray
             loss or local gradients that needs to be propagated
-        :param next_layer: next_layer: Layer | None
+        :key next_layer: next_layer: Layer | None
         """
         if isinstance(error, Loss):
 
@@ -70,14 +70,14 @@ class DenseLayer(TrainableLayer):
         """
         Updates weights and bias
         -----
-        :param error: np.ndarray
+        :key error: np.ndarray
             numpy array of calculated local gradients
-            if this is the last layer, there are no next_layer so pass None
-            else pass next layer object
-        :param prev_layer: Layer | np.ndarray
-            if this is the first layer, there is no prev_layer so pass input data
-            else pass previous layer object
-        :param lr: float
+            if this is the last layers, there are no next_layer so pass None
+            else pass next layers object
+        :key prev_layer: Layer | np.ndarray
+            if this is the first layers, there is no prev_layer so pass input data
+            else pass previous layers object
+        :key lr: float
             value usually between 10^-1 and 10^-6.
             Makes the changes to weights and bias smaller, so the training becomes smoother.
         -----

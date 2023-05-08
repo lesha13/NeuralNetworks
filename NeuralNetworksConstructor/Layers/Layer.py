@@ -8,10 +8,10 @@ class Layer(object):
     -----
     Attributes
         :_save_memory: bool
-            if _save_memory = False then layer does store the data needed for backpropagation
+            if _save_memory = False then layers does store the data needed for backpropagation
             else doesn't store the data needed for backpropagation
         :_info: str
-            string used in __str__ and __repr__ to show the info about layer
+            names used in __str__ and __repr__ to show the info about layers
     """
     _save_memory = False
 
@@ -22,7 +22,7 @@ class Layer(object):
         """
         Does the forward propagation of the data
         -----
-        :param x: np.ndarray
+        :key x: np.ndarray
         -----
         :return: np.ndarray
             numpy array of neuron outputs
@@ -33,8 +33,8 @@ class Layer(object):
         """
         Computes the local gradient needed for backpropagation.
         ------
-        :param args:
-        :param kwargs:
+        :key args:
+        :key kwargs:
         -------
         :return: np.ndarray
             numpy array of local gradients
@@ -53,7 +53,7 @@ class Layer(object):
         """
         Calls forward() method.
         -----
-        :param x: np.ndarray
+        :key x: np.ndarray
         -----
         :return: np.ndarray
             numpy array of local gradients

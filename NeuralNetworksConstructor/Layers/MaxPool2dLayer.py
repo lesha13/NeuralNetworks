@@ -23,11 +23,10 @@ class MaxPool2dLayer(Layer):
         if isinstance(next_layer, Conv2dLayer):
             error = Conv2dLayer.convolve(
                 error,
-                Conv2dLayer.rotate_kernel_180(
-                    np.swapaxes(next_layer.weights, 0, 1)
-                ),
+                np.swapaxes(Conv2dLayer.rotate_kernel_180(next_layer.weights), 0, 1),
                 True,
             )
+
         self.indices[np.isnan(self.indices)] = error.reshape(-1)
 
         return self.indices

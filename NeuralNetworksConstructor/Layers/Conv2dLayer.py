@@ -25,18 +25,18 @@ class Conv2dLayer(TrainableLayer):
 
     def __init__(self, input_: int, output_: int, l: int, w: int, kernel_size: int = 3, activation: callable = ReLU):
         """
-        :param input_: int
+        :key input_: int
             number of input data channels
-        :param output_: int
+        :key output_: int
             number of channels you want for output data to be
-        :param l: int
+        :key l: int
             length of image
-        :param w: int
+        :key w: int
             width of image
-        :param kernel_size: int
+        :key kernel_size: int
             default kernel_size = 3
             size of a 2 dimensional filters (kernel_size, kernel_size)
-        :param: callable
+        :key: callable
             activation function used in forward and backward propagation
         """
         self._weights = normal(
@@ -59,7 +59,7 @@ class Conv2dLayer(TrainableLayer):
         """
         Does the forward propagation of the data using convolution operations.
         -----
-        :param x: np.ndarray
+        :key x: np.ndarray
         -----
         :return: np.ndarray
         """
@@ -77,7 +77,10 @@ class Conv2dLayer(TrainableLayer):
         """
         Computes the local gradient needed for backpropagation.
         -----
-        :param error: np.ndarray
+        :key error: np.ndarray
+
+        :key next_layer: Layer
+
         -----
         :return: np.ndarray
         """
@@ -89,9 +92,9 @@ class Conv2dLayer(TrainableLayer):
         """
 
         -----
-        :param error: np.ndarray
-        :param prev_layer: Layer | np.ndarray
-        :param lr: float
+        :key error: np.ndarray
+        :key prev_layer: Layer | np.ndarray
+        :key lr: float
         -----
         :return: None
         """
@@ -117,11 +120,11 @@ class Conv2dLayer(TrainableLayer):
         """
         Static method used for 2d convolution between one 2 dimensional numpy array and one 2 dimensional numpy array
         -----
-        :param data: np.ndarray
+        :key data: np.ndarray
             2 dimensional numpy array (image or some other data)
-        :param kernel: np.ndarray
+        :key kernel: np.ndarray
             2 dimensional numpy array (kernel, filter)
-        :param padding: bool
+        :key padding: bool
             default is False
             if True adds zeros so the resulting numpy arrays shape equals input data shape
         -----
@@ -153,9 +156,9 @@ class Conv2dLayer(TrainableLayer):
     def conv_2d_mch(data: np.ndarray, kernels: np.ndarray, padding: bool = False) -> np.ndarray:
         """
 
-        :param data:
-        :param kernels:
-        :param padding:
+        :key data:
+        :key kernels:
+        :key padding:
         :return:
         """
         result = np.array([
@@ -169,11 +172,11 @@ class Conv2dLayer(TrainableLayer):
         """
         Static method used for 2d convolution between many 2 dimensional numpy array and many 2 dimensional numpy array
         -----
-        :param data: np.ndarray
+        :key data: np.ndarray
             2 dimensional numpy array (image or some other data)
-        :param kernels: np.ndarray
+        :key kernels: np.ndarray
             2 dimensional numpy array (kernel, filter)
-        :param padding: bool
+        :key padding: bool
             default is False
             if True adds zeros so the resulting numpy arrays shape equals input data shape
         -----
@@ -188,6 +191,9 @@ class Conv2dLayer(TrainableLayer):
 
     @staticmethod
     def rotate_kernel_180(kernel: np.ndarray) -> np.ndarray:
-        result = kernel[..., ::-1, ::-1]
+        try:
+            result = kernel[..., ::-1, ::-1]
 
-        return result
+            return result
+        except IndexError:
+            print("The array must be at least 2 dimensional")

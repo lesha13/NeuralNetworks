@@ -7,9 +7,9 @@ def save_model(file: str, model: NeuralNetwork) -> None:
     """
     Function for saving model to .pickle file.
     -----
-    :param file: str
+    :key file: str
         path to file
-    :param model: NeuralNetwork
+    :key model: NeuralNetwork
         some subclass of NeuralNetwork
     -----
     :return: None

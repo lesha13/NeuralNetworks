@@ -40,6 +40,8 @@ class TrainableLayer(Layer):
         self.weighted_sum = None
         self.activation = None
 
+        raise NotImplementedError
+
     @property
     def weights(self) -> np.ndarray:
         return self._weights
@@ -51,7 +53,7 @@ class TrainableLayer(Layer):
     @property
     def output(self) -> np.ndarray:
         """
-        Computes result of applying activation func (parameter derivative = False) on weighted sum
+        Computes result of applying activation func (key derivative = False) on weighted sum
         -----
         :return: np.ndarray
             resulting numpy array
@@ -61,7 +63,7 @@ class TrainableLayer(Layer):
     @property
     def derivative_weighted_sum(self) -> np.ndarray:
         """
-        Computes result of applying activation func (parameter derivative = True) on weighted sum
+        Computes result of applying activation func (key derivative = True) on weighted sum
         -----
         :return: np.ndarray
             resulting numpy array
@@ -72,8 +74,8 @@ class TrainableLayer(Layer):
         """
         Updates weights and bias
         -----
-        :param args:
-        :param kwargs:
+        :key args:
+        :key kwargs:
         -----
         :return: None
         """

@@ -5,7 +5,7 @@ def timer(func: callable) -> callable:
     """
     Decorator used for printing time.
     -----
-    :param func: callable
+    :key func: callable
         function, that need to be wrapped.
     -----
     :return: callable

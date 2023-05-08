@@ -5,9 +5,9 @@ def binary_step(data: np.ndarray | None, derivative: bool = False) -> np.ndarray
     """
     Applies binary step function on numpy array.
     -----
-    :param data: np.ndarray | None
+    :key data: np.ndarray | None
         some input numpy array or None
-    :param derivative: bool, optional
+    :key derivative: bool, optional
         default: False
         if derivative = True computes derivative of binary step on this data
     -----

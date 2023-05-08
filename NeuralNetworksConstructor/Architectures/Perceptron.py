@@ -5,4 +5,4 @@ from activation_functions import signum
 
 class Perceptron(NeuralNetwork):
     def __init__(self):
-        self.dense_layer = DenseLayer(10, 1, signum)
+        self.dense_layer = DenseLayer(2, 1, signum)
